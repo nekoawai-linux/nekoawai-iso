@@ -27,7 +27,7 @@ jobs:
         run: bash -n config.sh scripts/*.sh
 
       - name: Image description is well-formed
-        run: xmllint --noout config.xml
+        run: python3 -c 'import xml.etree.ElementTree as ET; ET.parse("config.xml")'
 
       - name: Live overlay stays ASCII
         run: |
