@@ -1,0 +1,42 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: shell syntax, image description, Live overlay
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      # scripts/check.sh needs KIWI and built RPM repositories, so the runner
+      # validates what does not depend on them.
+      - name: Shell syntax
+        run: bash -n config.sh scripts/*.sh
+
+      - name: Image description is well-formed
+        run: xmllint --noout config.xml
+
+      - name: Live overlay stays ASCII
+        run: |
+          if LC_ALL=C grep -rn '[^[:print:][:space:]]' root; then
+            echo "Live overlay text must stay ASCII" >&2
+            exit 1
+          fi
+
+      - name: Live overlay names the installer
+        run: |
+          grep -q 'Welcome to NekoAwai Live' root/usr/lib/issue.d/50-nekoawai-live.issue
+          grep -q 'nekoawai-install' root/usr/lib/issue.d/50-nekoawai-live.issue

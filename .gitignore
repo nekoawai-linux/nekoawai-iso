@@ -1,0 +1,32 @@
+# Build output
+/out/
+/cache/
+
+# Local build configuration; config/build.conf.example is the template
+/config/build.conf
+
+# Images and packages never belong in history
+*.iso
+*.raw
+*.img
+*.rpm
+*.tar.gz
+
+# Working notes and drafts
+/docs/plans/
+
+# Assistant tooling
+/.claude/
+/.codex/
+/.agents/
+/.cursor/
+/.aider*
+/CLAUDE.md
+/AGENTS.md
+/GEMINI.md
+/.github/copilot-instructions.md
+
+# Editors and desktops
+*~
+*.sw?
+.DS_Store

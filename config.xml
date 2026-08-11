@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<image schemaversion="8.5" name="nekoawai-online-cli" displayname="NekoAwai Online CLI">
+  <description type="system">
+    <author>NekoAwai Project</author>
+    <contact>https://nekoawai.moe</contact>
+    <specification>NekoAwai online CLI Live and installation environment</specification>
+  </description>
+  <preferences>
+    <type image="iso" primary="true" filesystem="squashfs" flags="overlay"
+          firmware="efi" gpt_hybrid_mbr="true" volid="NEKOAWAI_CLI_001"
+          kernelcmdline="quiet loglevel=3">
+      <bootloader name="grub2" timeout="3" timeout_style="menu"/>
+    </type>
+    <version>0.0.1</version>
+    <packagemanager>zypper</packagemanager>
+    <locale>en_US</locale>
+    <!-- Without a keytable the Live root gets no vconsole.conf at all and the
+         console keeps whatever the firmware left behind. -->
+    <keytable>us</keytable>
+    <timezone>UTC</timezone>
+    <rpm-check-signatures>false</rpm-check-signatures>
+    <rpm-excludedocs>true</rpm-excludedocs>
+  </preferences>
+  <users>
+    <user name="root" home="/root" shell="/bin/bash" groups="root"
+          pwdformat="encrypted"
+          password="$6$nekoawai$t.dTy4n.n7d5cpk3kECPVSafwkNBn6vPjt0HCJ9UXQZHtE38dNjLHMPA5E1PPry0nn57NP4yeOijUmY.p4Ekd1"/>
+  </users>
+  <repository type="rpm-md" alias="tumbleweed-oss" imageinclude="false">
+    <source path="https://download.opensuse.org/tumbleweed/repo/oss/"/>
+  </repository>
+  <repository type="rpm-md" alias="nekoawai-target" priority="90" imageinclude="false">
+    <source path="this://repositories/target"/>
+  </repository>
+  <repository type="rpm-md" alias="nekoawai-installer" priority="90" imageinclude="false">
+    <source path="this://repositories/installer"/>
+  </repository>
+  <packages type="bootstrap">
+    <package name="filesystem"/>
+    <package name="glibc"/>
+    <package name="bash"/>
+    <package name="rpm"/>
+    <package name="zypper"/>
+    <package name="ca-certificates"/>
+    <package name="ca-certificates-mozilla"/>
+    <package name="nekoawai-release"/>
+  </packages>
+  <packages type="image" patternType="onlyRequired">
+    <package name="patterns-nekoawai-base"/>
+    <package name="nekoawai-install"/>
+    <package name="grub2"/>
+    <package name="grub2-i386-pc"/>
+    <package name="grub2-x86_64-efi" arch="x86_64"/>
+    <package name="grub2-branding-upstream"/>
+  </packages>
+  <packages type="iso">
+    <package name="dracut-kiwi-live"/>
+  </packages>
+</image>

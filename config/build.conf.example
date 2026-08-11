@@ -1,0 +1,5 @@
+# Optional local overrides. Defaults point to sibling projects.
+NEKO_LINUX_ROOT=/home/admin/project/nekoawai-linux
+NEKO_TARGET_REPO=/home/admin/project/nekoawai-linux/out/repo
+NEKO_INSTALLER_REPO=/home/admin/project/nekoawai-linux/out/installer-repo
+NEKO_UPSTREAM_OSS=https://download.opensuse.org/tumbleweed/repo/oss/
