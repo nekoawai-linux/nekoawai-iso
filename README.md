@@ -2,12 +2,16 @@
 
 # nekoawai-iso
 
+=^..^=
+
 ![Release](https://img.shields.io/github/v/release/nekoawai-linux/nekoawai-iso?include_prereleases&label=ISO%20Release&style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/nekoawai-linux/nekoawai-iso?style=for-the-badge&color=%23daaa3f)
 ![License](https://img.shields.io/github/license/nekoawai-linux/nekoawai-iso?color=green&style=for-the-badge)
 [![Website](https://img.shields.io/badge/Website-nekoawai.moe-%23e32b6b?style=for-the-badge)](https://nekoawai.moe)
 
 **The recipe for the bootable [NekoAwai](https://github.com/nekoawai-linux/nekoawai-linux) Live image.**
+
+One image, one login, one command to put the system on a disk.
 
 </div>
 
