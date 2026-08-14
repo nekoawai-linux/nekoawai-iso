@@ -17,7 +17,7 @@ One image, one login, one command to put the system on a disk.
 
 ## What it builds
 
-`nekoawai-online-cli-0.0.1-x86_64.iso`, a hybrid UEFI and Legacy BIOS image
+`nekoawai-online-cli-0.0.2-x86_64.iso`, a hybrid UEFI and Legacy BIOS image
 that boots to a text login and carries the installer. The NekoAwai packages
 are embedded; the kernel, the desktops and everything else upstream are
 downloaded from openSUSE Tumbleweed during installation, which is why the

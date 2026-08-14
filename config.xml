@@ -11,7 +11,7 @@
           kernelcmdline="quiet loglevel=3">
       <bootloader name="grub2" timeout="3" timeout_style="menu"/>
     </type>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packagemanager>zypper</packagemanager>
     <locale>en_US</locale>
     <!-- Without a keytable the Live root gets no vconsole.conf at all and the
