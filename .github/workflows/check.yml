@@ -28,10 +28,12 @@ jobs:
 
       - name: Shell analysis
         # SC1090 is config/build.conf, read at run time and optional.
+        # Warnings and above only: the info level is style advice, and
+        # runners do not all carry the same shellcheck.
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y shellcheck
-          shellcheck --shell=bash --exclude=SC1090 config.sh scripts/*.sh
+          shellcheck --shell=bash --severity=warning --exclude=SC1090 config.sh scripts/*.sh
 
       - name: Image description is well-formed
         run: python3 -c 'import xml.etree.ElementTree as ET; ET.parse("config.xml")'

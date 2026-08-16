@@ -48,8 +48,10 @@ fi
 
 bash -n "$root/config.sh" "$root"/scripts/*.sh
 if command -v shellcheck >/dev/null; then
-	# SC1090 is config/build.conf, read at run time and optional.
-	shellcheck --shell=bash --exclude=SC1090 "$root/config.sh" "$root"/scripts/*.sh
+	# SC1090 is config/build.conf, read at run time and optional. Warnings
+	# and above only: the info level is style advice, and no two machines
+	# here carry the same shellcheck.
+	shellcheck --shell=bash --severity=warning --exclude=SC1090 "$root/config.sh" "$root"/scripts/*.sh
 else
 	echo "shellcheck is not installed here; CI runs it"
 fi
