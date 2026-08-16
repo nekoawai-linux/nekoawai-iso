@@ -17,11 +17,16 @@ One image, one login, one command to put the system on a disk.
 
 ## What it builds
 
-`nekoawai-online-cli-0.0.2-x86_64.iso`, a hybrid UEFI and Legacy BIOS image
-that boots to a text login and carries the installer. The NekoAwai packages
-are embedded; the kernel, the desktops and everything else upstream are
-downloaded from openSUSE Tumbleweed during installation, which is why the
-image is called online.
+`nekoawai-online-cli-0.0.3-x86_64.iso`, a UEFI image that boots to a text
+login and carries the installer. The NekoAwai packages are embedded; the
+kernel, the desktops and everything else upstream are downloaded from openSUSE
+Tumbleweed during installation, which is why the image is called online.
+
+UEFI and nothing else, on purpose. The image used to carry a legacy BIOS boot
+entry as well, which started on hardware `nekoawai-install` then refused to
+work on: it is UEFI-only and says so at the first check. A medium that boots a
+machine it cannot install on is a trap, and `make verify` now fails if a BIOS
+entry comes back.
 
 ## Build
 

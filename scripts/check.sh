@@ -47,6 +47,33 @@ if rg -q 'nekofetch' "$root/config.xml" "$root/config.sh" "$root/root"; then
 fi
 
 bash -n "$root/config.sh" "$root"/scripts/*.sh
+if command -v shellcheck >/dev/null; then
+	# SC1090 is config/build.conf, read at run time and optional.
+	shellcheck --shell=bash --exclude=SC1090 "$root/config.sh" "$root"/scripts/*.sh
+else
+	echo "shellcheck is not installed here; CI runs it"
+fi
+
+# The image is EFI only, because nekoawai-install is. A BIOS boot entry would
+# only carry somebody to a machine the installer refuses to work on.
+# Matched as attributes and elements rather than as words, so that the comment
+# in config.xml can name what was removed without tripping its own check.
+if grep -q 'gpt_hybrid_mbr=\|<package name="grub2-i386-pc"' "$root/config.xml"; then
+	echo "the image description asks for legacy BIOS boot; the installer is UEFI only" >&2
+	exit 1
+fi
+if ! grep -q 'eficsm="false"' "$root/config.xml"; then
+	echo "eficsm is not disabled; KIWI writes a BIOS boot entry without it" >&2
+	exit 1
+fi
+
+# patternType="onlyRequired" drops every recommendation, and the base pattern
+# only recommends the firmware. The medium has to name it outright or it boots
+# in a virtual machine and on no real network card at all.
+if ! grep -q 'kernel-firmware-all' "$root/config.xml"; then
+	echo "the image description does not name kernel-firmware-all" >&2
+	exit 1
+fi
 mkdir -p "$root/out/tmp"
 kiwi-ng --temp-dir "$root/out/tmp" image info --description "$root" >/dev/null
 

@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   check:
-    name: shell syntax, image description, Live overlay
+    name: shellcheck, image description, Live overlay
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -26,8 +26,43 @@ jobs:
       - name: Shell syntax
         run: bash -n config.sh scripts/*.sh
 
+      - name: Shell analysis
+        # SC1090 is config/build.conf, read at run time and optional.
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y shellcheck
+          shellcheck --shell=bash --exclude=SC1090 config.sh scripts/*.sh
+
       - name: Image description is well-formed
         run: python3 -c 'import xml.etree.ElementTree as ET; ET.parse("config.xml")'
+
+      - name: The image boots the way the installer installs
+        # EFI only: nekoawai-install refuses a machine that booted without
+        # UEFI, so a BIOS entry only carries somebody as far as that refusal.
+        run: |
+          # Attributes and elements, not words: the comment in config.xml has
+          # to be able to name what was taken out.
+          if grep -n 'gpt_hybrid_mbr=\|<package name="grub2-i386-pc"' config.xml; then
+            echo "the image description asks for legacy BIOS boot" >&2
+            exit 1
+          fi
+          # eficsm is the one that decides it. Without it KIWI writes a BIOS
+          # El Torito entry for an iso type whatever else the description says.
+          if ! grep -n 'eficsm="false"' config.xml; then
+            echo "eficsm is not disabled" >&2
+            exit 1
+          fi
+
+      - name: The medium carries firmware
+        # onlyRequired drops every recommendation, and the base pattern only
+        # recommends the firmware set. An online installer that cannot bring
+        # up an unknown network card is an installer that works in a virtual
+        # machine and nowhere else.
+        run: |
+          if ! grep -n 'kernel-firmware-all' config.xml; then
+            echo "the image description does not name kernel-firmware-all" >&2
+            exit 1
+          fi
 
       - name: Live overlay stays ASCII
         run: |

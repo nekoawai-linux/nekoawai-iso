@@ -26,6 +26,15 @@ mkdir -p \
 	"$stage/root/usr/share/nekoawai/repo" \
 	"$result"
 install -m 0644 "$root/config.xml" "$stage/config.xml"
+# KIWI's signature check is one switch for the whole description, not one per
+# repository, so it can only go on once everything in it is signed. The moment
+# the target repository arrives with a signature over its metadata the staged
+# description asks for the check, and the file in the repository goes on
+# saying what is true today. See nekoawai-linux, NEKO_SIGN_KEY.
+if [ -f "$target_repo/repodata/repomd.xml.asc" ]; then
+	sed -i 's|<rpm-check-signatures>false<|<rpm-check-signatures>true<|' "$stage/config.xml"
+	echo "target repository is signed: building with rpm-check-signatures"
+fi
 install -m 0755 "$root/config.sh" "$stage/config.sh"
 cp -a "$root/root"/. "$stage/root"/
 cp -a "$target_repo"/. "$stage/root/usr/share/nekoawai/repo"/

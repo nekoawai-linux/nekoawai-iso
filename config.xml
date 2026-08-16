@@ -6,18 +6,32 @@
     <specification>NekoAwai online CLI Live and installation environment</specification>
   </description>
   <preferences>
+    <!-- EFI only. The image used to boot on a legacy BIOS machine, carry the
+         person all the way to nekoawai-install and then refuse: the installer
+         is UEFI-only and says so at its first check. A medium that starts on
+         hardware it cannot install on is a trap, and the honest fix is not to
+         start.
+         eficsm is what actually does it. Dropping gpt_hybrid_mbr and
+         grub2-i386-pc is not enough on its own: KIWI writes a BIOS El Torito
+         entry for an iso type regardless, and `make verify` catches that. -->
     <type image="iso" primary="true" filesystem="squashfs" flags="overlay"
-          firmware="efi" gpt_hybrid_mbr="true" volid="NEKOAWAI_CLI_001"
+          firmware="efi" eficsm="false" volid="NEKOAWAI_CLI_001"
           kernelcmdline="quiet loglevel=3">
       <bootloader name="grub2" timeout="3" timeout_style="menu"/>
     </type>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packagemanager>zypper</packagemanager>
     <locale>en_US</locale>
     <!-- Without a keytable the Live root gets no vconsole.conf at all and the
          console keeps whatever the firmware left behind. -->
     <keytable>us</keytable>
     <timezone>UTC</timezone>
+    <!-- False because the distribution's own packages are unsigned, and this
+         switch is not per repository: leaving it on would stop the build at
+         the first nekoawai-* rpm. It costs the check on the Tumbleweed
+         packages as well, which is the whole of what it costs.
+         scripts/build.sh turns it on for the build the moment the target
+         repository arrives signed; see nekoawai-linux, NEKO_SIGN_KEY. -->
     <rpm-check-signatures>false</rpm-check-signatures>
     <rpm-excludedocs>true</rpm-excludedocs>
   </preferences>
@@ -48,8 +62,14 @@
   <packages type="image" patternType="onlyRequired">
     <package name="patterns-nekoawai-base"/>
     <package name="nekoawai-install"/>
+    <!-- The base pattern only recommends the firmware, and onlyRequired means
+         a recommendation never arrives: the installer decides per machine
+         whether the installed system keeps it. The medium has no such choice.
+         It is an online installer, so it has to bring up a network card it has
+         never seen before it can do anything at all, and a Live image without
+         firmware is one that works in a virtual machine and nowhere else. -->
+    <package name="kernel-firmware-all"/>
     <package name="grub2"/>
-    <package name="grub2-i386-pc"/>
     <package name="grub2-x86_64-efi" arch="x86_64"/>
     <package name="grub2-branding-upstream"/>
   </packages>
