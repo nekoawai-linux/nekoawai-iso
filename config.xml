@@ -62,6 +62,12 @@
   <packages type="image" patternType="onlyRequired">
     <package name="patterns-nekoawai-base"/>
     <package name="nekoawai-install"/>
+    <!-- The installer is a Python curses application. Both come in as its
+         requires; naming them here means a change to the installer's
+         dependencies cannot quietly leave the Live console without a working
+         menu. curses is split out of python3-base on openSUSE. -->
+    <package name="python3-base"/>
+    <package name="python3-curses"/>
     <!-- The base pattern only recommends the firmware, and onlyRequired means
          a recommendation never arrives: the installer decides per machine
          whether the installed system keeps it. The medium has no such choice.
