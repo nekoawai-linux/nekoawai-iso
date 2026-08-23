@@ -19,7 +19,10 @@
           kernelcmdline="quiet loglevel=3">
       <bootloader name="grub2" timeout="3" timeout_style="menu"/>
     </type>
-    <version>0.0.3</version>
+    <!-- Placeholder only. The distribution version is single-sourced in
+         nekoawai-linux/nekoawai.conf (NEKO_VERSION) and stamped into the
+         staged copy by scripts/build.sh. Do not edit this number. -->
+    <version>0.0.0</version>
     <packagemanager>zypper</packagemanager>
     <locale>en_US</locale>
     <!-- Without a keytable the Live root gets no vconsole.conf at all and the
@@ -62,6 +65,12 @@
   <packages type="image" patternType="onlyRequired">
     <package name="patterns-nekoawai-base"/>
     <package name="nekoawai-install"/>
+    <!-- The installer is a Python curses application. Both come in as its
+         requires; naming them here means a change to the installer's
+         dependencies cannot quietly leave the Live console without a working
+         menu. curses is split out of python3-base on openSUSE. -->
+    <package name="python3-base"/>
+    <package name="python3-curses"/>
     <!-- The base pattern only recommends the firmware, and onlyRequired means
          a recommendation never arrives: the installer decides per machine
          whether the installed system keeps it. The medium has no such choice.

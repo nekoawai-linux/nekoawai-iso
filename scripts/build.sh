@@ -13,8 +13,11 @@ target_repo=${NEKO_TARGET_REPO:-$linux_root/out/repo}
 installer_repo=${NEKO_INSTALLER_REPO:-$linux_root/out/installer-repo}
 stage=$root/out/description
 result=$root/out/result
-# The recipe owns the version, so the name of the image cannot drift from it.
-version=$(sed -n 's|.*<version>\(.*\)</version>.*|\1|p' "$root/config.xml")
+# One version for the whole distribution: nekoawai-linux/nekoawai.conf owns it
+# (NEKO_VERSION), the same value the packages are built with. config.xml keeps a
+# placeholder that is stamped over in the staged copy below.
+. "$linux_root/nekoawai.conf"
+version=$NEKO_VERSION
 final=$root/out/nekoawai-online-cli-$version-x86_64.iso
 
 "$root/scripts/check.sh"
@@ -26,6 +29,8 @@ mkdir -p \
 	"$stage/root/usr/share/nekoawai/repo" \
 	"$result"
 install -m 0644 "$root/config.xml" "$stage/config.xml"
+# Stamp the single-sourced distribution version into the staged recipe.
+sed -i "s|<version>[^<]*</version>|<version>$version</version>|" "$stage/config.xml"
 # KIWI's signature check is one switch for the whole description, not one per
 # repository, so it can only go on once everything in it is signed. The moment
 # the target repository arrives with a signature over its metadata the staged
