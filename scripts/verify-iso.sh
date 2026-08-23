@@ -3,7 +3,12 @@
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
-version=$(sed -n 's|.*<version>\(.*\)</version>.*|\1|p' "$root/config.xml")
+config=$root/config/build.conf
+[ ! -f "$config" ] || . "$config"
+linux_root=${NEKO_LINUX_ROOT:-$root/../nekoawai-linux}
+# Same single source as the build: nekoawai-linux/nekoawai.conf (NEKO_VERSION).
+. "$linux_root/nekoawai.conf"
+version=$NEKO_VERSION
 iso=${1:-$root/out/nekoawai-online-cli-$version-x86_64.iso}
 
 [ -f "$iso" ] || { echo "ISO not found: $iso" >&2; exit 1; }

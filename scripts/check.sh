@@ -10,6 +10,11 @@ linux_root=${NEKO_LINUX_ROOT:-$root/../nekoawai-linux}
 target_repo=${NEKO_TARGET_REPO:-$linux_root/out/repo}
 installer_repo=${NEKO_INSTALLER_REPO:-$linux_root/out/installer-repo}
 
+# The distribution version is single-sourced here and inherited by the image;
+# build.sh reads it the same way. Fail early if it is missing.
+. "$linux_root/nekoawai.conf"
+[ -n "${NEKO_VERSION:-}" ] || { echo "NEKO_VERSION not set in $linux_root/nekoawai.conf" >&2; exit 1; }
+
 for command in kiwi-ng rpm xorriso; do
 	command -v "$command" >/dev/null || { echo "missing build command: $command" >&2; exit 1; }
 done
